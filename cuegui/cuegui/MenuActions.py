@@ -66,10 +66,6 @@ TOOLTIP = 1
 ICON = 2
 
 # New icons are here: /usr/share/icons/crystalsvg/16x16
-def write_to_clipboard(output):
-    process = subprocess.Popen(
-        'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
-    process.communicate(output.encode('utf-8'))
 
 class AbstractActions(object):
     __iconCache = {}
@@ -392,7 +388,8 @@ class JobActions(AbstractActions):
         if jobs:
             job = jobs[0]
             try:
-                write_to_clipboard(job.name)
+                QtGui.QClipboard.setText(job.name, mode = QtGui.QClipboard.Clipboard)
+                QtGui.QClipboard.setText(job.name, mode = QtGui.QClipboard.Selection)
             except Exception as e:
                 raise e     
 
