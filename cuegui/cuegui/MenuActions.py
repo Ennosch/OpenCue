@@ -66,7 +66,10 @@ TOOLTIP = 1
 ICON = 2
 
 # New icons are here: /usr/share/icons/crystalsvg/16x16
-
+def write_to_clipboard(output):
+    process = subprocess.Popen(
+        'pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(output.encode('utf-8'))
 
 class AbstractActions(object):
     __iconCache = {}
@@ -382,6 +385,16 @@ class JobActions(AbstractActions):
         jobs = self._getOnlyJobObjects(rpcObjects)
         if jobs:
             cuegui.Comments.CommentListDialog(jobs[0], self._caller).show()
+
+    copyJobName_info = ["Copy job name...", None, "configure"]
+    def copyJobName(self, rpcObjects=None):
+        jobs = self._getOnlyJobObjects(rpcObjects)
+        if jobs:
+            job = jobs[0]
+            try:
+                write_to_clipboard(job.name)
+            except Exception as e:
+                raise e     
 
     dependWizard_info = ["Dependency &Wizard...", None, "configure"]
     def dependWizard(self, rpcObjects=None):
